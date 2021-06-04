@@ -37,6 +37,16 @@ public class Address extends EntityBase implements IPrintableEntity {
 		this.street = street;
 	}
 
+	public Address(UUID id, UUID userId, String apartmentNumber, String city, String country, String houseNumber, String street) {
+		super(id);
+		this.userId = userId;
+		this.apartmentNumber = apartmentNumber;
+		this.city = city;
+		this.country = country;
+		this.houseNumber = houseNumber;
+		this.street = street;
+	}
+
 	public String getApartmentNumber() {
 		return apartmentNumber;
 	}

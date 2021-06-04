@@ -5,6 +5,7 @@ import eCommerce.interfaces.IPrintableEntity;
 import eCommerce.models.base.EntityBase;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author ILans
@@ -21,6 +22,15 @@ public class Product extends EntityBase implements IPrintableEntity {
 	private List<Item> items;
 
 	public Product(String name, String description, String manufacturer, double price){
+		super();
+		this.description = description;
+		this.manufacturer = manufacturer;
+		this.price = price;
+		this.name = name;
+	}
+
+	public Product(UUID id, String name, String description, String manufacturer, double price){
+		super(id);
 		this.description = description;
 		this.manufacturer = manufacturer;
 		this.price = price;

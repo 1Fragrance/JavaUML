@@ -2,9 +2,9 @@ package eCommerce.ui.customer;
 
 import eCommerce.Constants;
 import eCommerce.enums.OrderStatus;
+import eCommerce.storage.repositories.interfaces.IDb;
 import eCommerce.models.*;
 import eCommerce.models.base.User;
-import eCommerce.storage.MemoryDb;
 import eCommerce.ui.ConsoleUIStrategyBase;
 import eCommerce.ui.InputHelper;
 
@@ -19,15 +19,15 @@ public class CustomerUIStrategy extends ConsoleUIStrategyBase {
 
     private ShoppingCart currentUserCart ;
 
-    public CustomerUIStrategy(InputHelper inputHelper, MemoryDb db, User currentUser) {
+    public CustomerUIStrategy(InputHelper inputHelper, IDb db, User currentUser) {
         super(inputHelper, db, currentUser);
     }
 
     private void CheckIsCartExist() {
-        Optional<ShoppingCart> cart = db.getShoppingCards().stream().filter(x -> x.getCustomerId() == currentUser.getId()).findFirst();
+        Optional<ShoppingCart> cart = db.getShoppingCards().getByCustomerId(currentUser.getId());
         if(!cart.isPresent()) {
             currentUserCart = new ShoppingCart(currentUser.getId());
-            db.getShoppingCards().add(currentUserCart);
+            db.getShoppingCards().insert(currentUserCart);
         } else {
             currentUserCart = cart.get();
         }
@@ -36,18 +36,23 @@ public class CustomerUIStrategy extends ConsoleUIStrategyBase {
     private void CheckIsCartHasItems() {
         if (currentUserCart.getHasItems()) {
             System.out.println("\nВ корзине уже есть добавленные продукты:");
-            List<Item> orderItems = db.getItems().stream().filter(x -> x.getCartId() == currentUserCart.getId()).collect(Collectors.toList());
+
+
+            List<Item> orderItems = db.getItems().getByCartId(currentUserCart.getId());
             for (Item item : orderItems) {
-                Optional<Product> product = db.getProducts().stream().filter(x -> x.getId() == item.getProductId()).findFirst();
+                Optional<Product> product = db.getProducts().getById(item.getProductId());
                 product.ifPresent(value -> System.out.println(item.getStringWithProduct(value)));
             }
             System.out.println("1. Продолжить покупку");
             System.out.println("2. Очистить корзину");
             int cartEmptyChoice = inputHelper.readInt(CUSTOMER_NOT_EMPTY_CART, CUSTOMER_EMPTY_CART);
             if(cartEmptyChoice == CUSTOMER_EMPTY_CART) {
-                List<Item> cartItems = db.getItems().stream().filter(x -> x.getCartId() == currentUserCart.getId()).collect(Collectors.toList());
-                db.getItems().removeAll(cartItems);
+                List<Item> cartItems = db.getItems().getByCartId(currentUserCart.getId());
+                for(Item item : cartItems) {
+                    db.getItems().delete(item);
+                }
                 currentUserCart.setHasItems(false);
+                db.getShoppingCards().update(currentUserCart);
 
                 System.out.println("Корзина была очищена");
                 inputHelper.pressAnyKeyToContinue();
@@ -72,7 +77,7 @@ public class CustomerUIStrategy extends ConsoleUIStrategyBase {
         String apartmentsNumber = inputHelper.readString();
 
         Address orderAddress = new Address(currentUser.getId(), apartmentsNumber, city, country, houseNumber, street);
-        db.getAddresses().add(orderAddress);
+        db.getAddresses().insert(orderAddress);
 
         return orderAddress;
     }
@@ -85,8 +90,7 @@ public class CustomerUIStrategy extends ConsoleUIStrategyBase {
             Address orderAddress = null;
             int addressInput = inputHelper.readInt(CUSTOMER_EXIST_ADDRESS, CUSTOMER_NEW_ADDRESS);
             if(addressInput == CUSTOMER_EXIST_ADDRESS) {
-                List<Address> userAddresses = db.getAddresses().stream().filter(x -> x.getUserId() == currentUser.getId()).collect(Collectors.toList());
-
+                List<Address> userAddresses = db.getAddresses().getListByUserId(currentUser.getId());
                 if(userAddresses.size() == 0) {
                     System.out.println("У Вас нету добавленных адресов, перенаправление на страницу добавления адреса");
                     orderAddress = AddNewAddress();
@@ -104,10 +108,10 @@ public class CustomerUIStrategy extends ConsoleUIStrategyBase {
                 orderAddress = AddNewAddress();
             }
 
-            List<Item> orderItems = db.getItems().stream().filter(x -> x.getCartId() == currentUserCart.getId()).collect(Collectors.toList());
+            List<Item> orderItems = db.getItems().getByCartId(currentUserCart.getId());
             double orderSum = 0;
             for (Item item : orderItems) {
-                Optional<Product> product = db.getProducts().stream().filter(x -> x.getId() == item.getProductId()).findFirst();
+                Optional<Product> product = db.getProducts().getById(item.getProductId());
                 if(!product.isPresent()) {
                     continue;
                 }
@@ -115,13 +119,15 @@ public class CustomerUIStrategy extends ConsoleUIStrategyBase {
             }
 
             Order newOrder = new Order(new Date(), orderSum, null, Constants.Users.SUPER_ADMIN_ID, orderAddress.getId(), OrderStatus.created, currentUser.getId());
-            db.getOrders().add(newOrder);
+            db.getOrders().insert(newOrder);
 
             for(Item item : orderItems) {
                 item.setCartId(null);
                 item.setOrderId(newOrder.getId());
+                db.getItems().update(item);
             }
             currentUserCart.setHasItems(false);
+            db.getShoppingCards().update(currentUserCart);
 
             System.out.println("\nЗаказ был успешно добавлен в систему. Ждите звонок оператора. Сумма заказа: " + orderSum);
             return;
@@ -130,21 +136,24 @@ public class CustomerUIStrategy extends ConsoleUIStrategyBase {
         }
     }
 
-    private void AddItemToCart(int selectedIndex) {
-        Product selectedProduct = db.getProducts().get(selectedIndex - 1);
+    private void AddItemToCart(int selectedIndex, List<Product> products) {
+        Product selectedProduct = products.get(selectedIndex - 1);
 
         System.out.println("Введите количество: ");
         int countInput = inputHelper.readInt(null, null);
 
         Item newItem = new Item(countInput, selectedProduct.getId(), currentUserCart.getId(), null);
-        db.getItems().add(newItem);
+        db.getItems().insert(newItem);
+
         currentUserCart.setHasItems(true);
+        db.getShoppingCards().update(currentUserCart);
+
         System.out.println("Товар был добавлен в корзину");
     }
 
     private void HandleShowProducts() {
         CheckIsCartHasItems();
-        List<Product> products = db.getProducts();
+        List<Product> products = db.getProducts().getList();
         for (int i = 1; i <= products.size(); i++) {
             Product product = products.get(i - 1);
             System.out.println(i + ". " + product.getString());
@@ -160,13 +169,13 @@ public class CustomerUIStrategy extends ConsoleUIStrategyBase {
             } else if (addToCartChoice == EXIT_CHOICE) {
                 break;
             } else {
-                AddItemToCart(addToCartChoice);
+                AddItemToCart(addToCartChoice, products);
             }
         }
     }
 
     private void HandleShowOrderHistory() {
-        List<Order> userOrders = db.getOrders().stream().filter(x -> x.getAuthorId() == currentUser.getId()).collect(Collectors.toList());
+        List<Order> userOrders = db.getOrders().getListByAuthorId(currentUser.getId());
         printOrders(userOrders);
 
         inputHelper.pressAnyKeyToContinue();

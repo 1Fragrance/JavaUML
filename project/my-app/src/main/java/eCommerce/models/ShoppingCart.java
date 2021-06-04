@@ -25,6 +25,12 @@ public class ShoppingCart extends EntityBase {
 		hasItems = false;
 	}
 
+	public ShoppingCart(UUID id, UUID customerId, boolean hasItems){
+		super(id);
+		this.customerId = customerId;
+		this.hasItems = hasItems;
+	}
+
 	public boolean getHasItems() {
 		return hasItems;
 	}

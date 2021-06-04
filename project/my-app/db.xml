@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<db>
+  <admins>
+    <admin>
+      <id>761520e6-4b8a-40d4-9421-e1f1a0f81b2b</id>
+      <firstName>Super</firstName>
+      <lastName>Admin</lastName>
+      <email>SuperAdmin@gmail.com</email>
+      <login>admin</login>
+      <password>admin</password>
+      <phone>+375293225566</phone>
+    </admin>
+  </admins>
+  <customers>
+    <customer>
+      <id>f65fd5da-a250-494a-a31b-e04c0df0f880</id>
+      <firstName>John</firstName>
+      <lastName>Dory</lastName>
+      <email>johnDory@gmail.com</email>
+      <login>johnDory</login>
+      <password>123</password>
+      <phone>+375293221122</phone>
+      <customerStatus>0</customerStatus>
+    </customer>
+    <customer>
+      <id>a35ad6a2-7b14-40ed-8fc2-7a7e946b20fa</id>
+      <firstName>Ivan</firstName>
+      <lastName>Dorn</lastName>
+      <email>ivanDorn@gmail.com</email>
+      <login>ivanDorm</login>
+      <password>123</password>
+      <phone>+375293222233</phone>
+      <customerStatus>0</customerStatus>
+    </customer>
+    <customer>
+      <id>bdc14d54-8d63-4222-a932-e4f4726e6ce7</id>
+      <firstName>Stas</firstName>
+      <lastName>Galchinskiy</lastName>
+      <email>stazeg@gmail.com</email>
+      <login>stazeg</login>
+      <password>123</password>
+      <phone>+375293223344</phone>
+      <customerStatus>0</customerStatus>
+    </customer>
+  </customers>
+  <addresses>
+    <address>
+      <id>d450cd87-06df-4e06-865f-435a0b4ac1a8</id>
+      <userId>f65fd5da-a250-494a-a31b-e04c0df0f880</userId>
+      <apartmentNumber>1</apartmentNumber>
+      <city>Minsk</city>
+      <country>Belarus</country>
+      <houseNumber>1</houseNumber>
+      <street>Rokosovskogo</street>
+    </address>
+    <address>
+      <id>a2c7cf75-bb6c-4f91-b74f-f05ba8f28fe8</id>
+      <userId>f65fd5da-a250-494a-a31b-e04c0df0f880</userId>
+      <apartmentNumber>2</apartmentNumber>
+      <city>Minsk</city>
+      <country>Belarus</country>
+      <houseNumber>2</houseNumber>
+      <street>Shpilevskogo</street>
+    </address>
+    <address>
+      <id>32661eb7-0c65-402f-b870-d7bc77e80bc0</id>
+      <userId>a35ad6a2-7b14-40ed-8fc2-7a7e946b20fa</userId>
+      <apartmentNumber>3</apartmentNumber>
+      <city>Minsk</city>
+      <country>Belarus</country>
+      <houseNumber>3</houseNumber>
+      <street>Gashkevicha</street>
+    </address>
+    <address>
+      <id>2aa039fd-e586-4bca-969c-10092ca5982b</id>
+      <userId>bdc14d54-8d63-4222-a932-e4f4726e6ce7</userId>
+      <apartmentNumber>4</apartmentNumber>
+      <city>Minsk</city>
+      <country>Belarus</country>
+      <houseNumber>4</houseNumber>
+      <street>Bogdanovicha</street>
+    </address>
+  </addresses>
+  <shoppingCarts>
+    <shoppingCart>
+      <id>19a2a032-369a-410c-be19-c674c137858e</id>
+      <customerId>f65fd5da-a250-494a-a31b-e04c0df0f880</customerId>
+      <hasItems>true</hasItems>
+    </shoppingCart>
+    <shoppingCart>
+      <id>fbfdb984-292f-44fb-a5fb-96970c98047c</id>
+      <customerId>a35ad6a2-7b14-40ed-8fc2-7a7e946b20fa</customerId>
+      <hasItems>false</hasItems>
+    </shoppingCart>
+    <shoppingCart>
+      <id>bdc14d54-8d63-4222-a932-e4f4726e6ce7</id>
+      <customerId>bdc14d54-8d63-4222-a932-e4f4726e6ce7</customerId>
+      <hasItems>false</hasItems>
+    </shoppingCart>
+  </shoppingCarts>
+  <products>
+    <product>
+      <id>9f72fab3-e32c-49ae-a02a-4533c0655ce2</id>
+      <name>IPhone 11</name>
+      <description>Мобильный телефон от Apple</description>
+      <manufacturer>Apple</manufacturer>
+      <price>1700</price>
+    </product>
+    <product>
+      <id>ff201890-6fdf-4363-8c3f-ddff15e07375</id>
+      <name>Xiaomi Mi 11</name>
+      <description>Мобильный телефон от Xiaomi</description>
+      <manufacturer>Xiaomi</manufacturer>
+      <price>940</price>
+    </product>
+    <product>
+      <id>eb3d6676-32f5-42a4-a2f1-efbfe1caa0b3</id>
+      <name>Samsung Galaxy A52</name>
+      <description>Мобильный телефон от Samsung</description>
+      <manufacturer>Samsung</manufacturer>
+      <price>860</price>
+    </product>
+    <product>
+      <id>dff613fe-dd33-4fbf-834f-36dd3a0cb91a</id>
+      <name>Apple iPhone 12 Pro</name>
+      <description>Дорогой мобильный телефон от Apple</description>
+      <manufacturer>Apple</manufacturer>
+      <price>2880</price>
+    </product>
+    <product>
+      <id>523ad188-6c7b-45a6-b03f-67354469c748</id>
+      <name>Huawei P40</name>
+      <description>Мобильный телефон от Huawei</description>
+      <manufacturer>Huawei</manufacturer>
+      <price>600</price>
+    </product>
+  </products>
+  <bills />
+  <items>
+    <item>
+      <id>aaac936c-2170-4132-8013-878332cbf81a</id>
+      <quantity>2</quantity>
+      <productId>9f72fab3-e32c-49ae-a02a-4533c0655ce2</productId>
+      <cartId>19a2a032-369a-410c-be19-c674c137858e</cartId>
+      <orderId />
+    </item>
+  </items>
+  <orders />
+</db>

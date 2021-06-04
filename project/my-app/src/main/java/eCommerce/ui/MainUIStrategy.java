@@ -2,17 +2,17 @@ package eCommerce.ui;
 
 import eCommerce.Constants;
 import eCommerce.enums.CustomerStatus;
+import eCommerce.storage.repositories.interfaces.IDb;
 import eCommerce.models.Admin;
 import eCommerce.models.Customer;
 import eCommerce.models.ShoppingCart;
 import eCommerce.models.base.User;
-import eCommerce.storage.MemoryDb;
 
 import java.util.Optional;
 
 public class MainUIStrategy extends ConsoleUIStrategyBase {
 
-    public MainUIStrategy(InputHelper inputHelper, MemoryDb db) {
+    public MainUIStrategy(InputHelper inputHelper, IDb db) {
         super(inputHelper, db);
     }
 
@@ -62,7 +62,7 @@ public class MainUIStrategy extends ConsoleUIStrategyBase {
         System.out.println("Пароль:");
         String password = inputHelper.readString();
 
-        Optional<Customer> customer = db.getCustomers().stream().filter(x -> x.getLogin().equals(login) && x.getPassword().equals(password)).findFirst();
+        Optional<Customer> customer = db.getCustomers().getByLoginAndPassword(login, password);
         if(customer.isPresent()) {
             return customer.get();
         }
@@ -79,7 +79,7 @@ public class MainUIStrategy extends ConsoleUIStrategyBase {
         System.out.println("Пароль:");
         String password = inputHelper.readString();
 
-        Optional<Admin> admin = db.getAdmins().stream().filter(x -> x.getLogin().equals(login) && x.getPassword().equals(password)).findFirst();
+        Optional<Admin> admin = db.getAdmins().getByLoginAndPassword(login, password);
         if(admin.isPresent()) {
             return admin.get();
         }
@@ -92,7 +92,7 @@ public class MainUIStrategy extends ConsoleUIStrategyBase {
         System.out.println("\nРегистрация");
         System.out.println("Введите логин:");
         String login = inputHelper.readString();
-        if(db.getCustomers().stream().anyMatch(x -> x.getLogin().equals(login))) {
+        if(db.getCustomers().isLoginExist(login)) {
             System.out.println("Такой логин уже существует");;
         };
 
@@ -113,10 +113,9 @@ public class MainUIStrategy extends ConsoleUIStrategyBase {
         System.out.println("Введите телефон:");
         String phone = inputHelper.readString();
 
-
         Customer newCustomer = new Customer(firstName, lastName, email, login, password, phone, CustomerStatus.active);
-        db.getShoppingCards().add(new ShoppingCart(newCustomer.getId()));
-        db.getCustomers().add(newCustomer);
+        db.getShoppingCards().insert(new ShoppingCart(newCustomer.getId()));
+        db.getCustomers().insert(newCustomer);
 
         return newCustomer;
     }

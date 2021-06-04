@@ -33,4 +33,11 @@ public class Constants {
     {
         public final static UUID SUPER_ADMIN_ID = UUID.randomUUID();
     }
+
+    public static class XML
+    {
+        public final static String XML_DB_PATH = "./db.xml";
+        public final static String XSD_DB_PATH = "./db.xsd";
+        public final static String ROOT_NODE = "db";
+    }
 }

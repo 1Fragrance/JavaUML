@@ -27,6 +27,13 @@ public class Bill extends EntityBase implements IPrintableEntity {
 		this.orderId = orderId;
 	}
 
+	public Bill(UUID id, Date issueDate, double sum, UUID orderId){
+		super(id);
+		this.issueDate = issueDate;
+		this.sum = sum;
+		this.orderId = orderId;
+	}
+
 	public Date getIssueDate() {
 		return issueDate;
 	}

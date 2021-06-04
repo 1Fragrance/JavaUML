@@ -42,6 +42,18 @@ public class Order extends EntityBase implements IPrintableEntity {
 		this.authorId = authorId;
 	}
 
+	public Order(UUID id, Date orderDate, double sum, UUID billId, UUID responsibleAdminId, UUID addressid, OrderStatus orderStatus, UUID authorId){
+		super(id);
+		this.orderDate = orderDate;
+		this.sum = sum;
+		this.billId = billId;
+		this.responsibleAdminId = responsibleAdminId;
+		this.addressId = addressid;
+		this.orderStatus = orderStatus;
+		this.authorId = authorId;
+	}
+
+
 	public void setBillId(UUID billId) {
 		this.billId = billId;
 	}

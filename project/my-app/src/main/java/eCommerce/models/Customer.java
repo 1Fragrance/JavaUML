@@ -15,7 +15,6 @@ import java.util.UUID;
 public class Customer extends User {
 
 	private final CustomerStatus customerStatus;
-	private UUID shoppingCartId;
 
 	private ShoppingCart shoppingCart;
 	private List<Address> addresses;
@@ -27,12 +26,13 @@ public class Customer extends User {
 		this.customerStatus = customerStatus;
 	}
 
-	public CustomerStatus getCustomerStatus() {
-		return customerStatus;
+	public Customer(UUID id, String firstName, String lastName, String email, String login, String password, String phone, CustomerStatus customerStatus) {
+		super(id, firstName, lastName, email, login, password, phone);
+		this.customerStatus = customerStatus;
 	}
 
-	public UUID getShoppingCartId() {
-		return shoppingCartId;
+	public CustomerStatus getCustomerStatus() {
+		return customerStatus;
 	}
 
 	@Override

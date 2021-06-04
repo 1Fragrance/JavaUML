@@ -2,22 +2,21 @@ package eCommerce.ui.admin;
 
 import eCommerce.Constants;
 import eCommerce.enums.OrderStatus;
+import eCommerce.storage.repositories.interfaces.IDb;
 import eCommerce.models.*;
 import eCommerce.models.base.User;
-import eCommerce.storage.MemoryDb;
 import eCommerce.ui.ConsoleUIStrategyBase;
 import eCommerce.ui.InputHelper;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static eCommerce.Constants.Navigation.*;
 
 public class AdminUIStrategy extends ConsoleUIStrategyBase {
 
-    public AdminUIStrategy(InputHelper inputHelper, MemoryDb db, User currentUser) {
+    public AdminUIStrategy(InputHelper inputHelper, IDb db, User currentUser) {
         super(inputHelper, db, currentUser);
     }
 
@@ -39,8 +38,8 @@ public class AdminUIStrategy extends ConsoleUIStrategyBase {
                 case Constants.Navigation.ADMIN_USER_MANAGEMENT_CHOICE:
                 {
                     System.out.println("Пользователи в системе");
-                    ArrayList<Customer> customers = db.getCustomers();
 
+                    ArrayList<Customer> customers = db.getCustomers().getList();
                     for (int i = 1; i <= customers.size(); i++) {
                         System.out.println(i + ". " + customers.get(i - 1).getString() + "\n");
                     }
@@ -57,14 +56,17 @@ public class AdminUIStrategy extends ConsoleUIStrategyBase {
                     InputHelper.clearScreen();
 
                     System.out.println(targetCustomer.getString());
-                    List<Address> userAddresses = db.getAddresses().stream().filter(x -> x.getUserId() == targetCustomer.getId()).collect(Collectors.toList());
+
+
+                    List<Address> userAddresses = db.getAddresses().getListByUserId(targetCustomer.getId());
                     System.out.println("\nАдреса:");
                     for(Address address : userAddresses) {
                         System.out.println(address.getString());
                     }
 
                     System.out.println("\nЗаказы:");
-                    List<Order> userOrders = db.getOrders().stream().filter(x -> x.getAuthorId() == targetCustomer.getId()).collect(Collectors.toList());
+
+                    List<Order> userOrders = db.getOrders().getListByAuthorId(targetCustomer.getId());
                     printOrders(userOrders);
 
                     inputHelper.pressAnyKeyToContinue();
@@ -74,7 +76,7 @@ public class AdminUIStrategy extends ConsoleUIStrategyBase {
                 case Constants.Navigation.ADMIN_ORDERS_MANAGEMENT_CHOICE:
                 {
                     System.out.println("Назначенные на Вас заказы:");
-                    List<Order> orders = db.getOrders().stream().filter(x -> x.getResponsibleAdminId() == currentUser.getId() && x.getOrderStatus() == OrderStatus.created).collect(Collectors.toList());
+                    List<Order> orders = db.getOrders().getListByResponsibleAdminIdAndStatus(currentUser.getId(), OrderStatus.created);
                     if(orders.size() == 0) {
                         System.out.println("Назначенных заказов нет:");
                         inputHelper.pressAnyKeyToContinue();
@@ -98,15 +100,20 @@ public class AdminUIStrategy extends ConsoleUIStrategyBase {
                     int action = inputHelper.readInt(0, 2);
                     switch (action) {
                         case ADMIN_ORDERS_MANAGEMENT_CLOSE: {
-                            targetOrder.setOrderStatus(OrderStatus.closed);
                             Bill billingInfo = new Bill(new Date(), targetOrder.getSum(), targetOrder.getId());
-                            db.getBills().add(billingInfo);
+                            db.getBills().insert(billingInfo);
+
+                            targetOrder.setOrderStatus(OrderStatus.closed);
                             targetOrder.setBillId(billingInfo.getId());
+                            db.getOrders().update(targetOrder);
+
                             inputHelper.pressAnyKeyToContinue();
                             break;
                         }
                         case ADMIN_ORDERS_MANAGEMENT_CANCEL: {
                             targetOrder.setOrderStatus(OrderStatus.canceled);
+                            db.getOrders().update(targetOrder);
+
                             inputHelper.pressAnyKeyToContinue();
                             break;
                         }

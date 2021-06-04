@@ -30,6 +30,14 @@ public class Item extends EntityBase implements IPrintableEntity  {
 		this.orderId = orderId;
 	}
 
+	public Item(UUID id, int quantity, UUID productId, UUID cartId, UUID orderId){
+		super(id);
+		this.quantity = quantity;
+		this.productId = productId;
+		this.cartId = cartId;
+		this.orderId = orderId;
+	}
+
 	public int getQuantity() {
 		return quantity;
 	}
