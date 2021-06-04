@@ -28,11 +28,11 @@ public class XmlDb extends DbBase {
             validateXMLbyXSD();
         } catch (IOException e) {
             System.out.println("Ошибка: файл XML не найден");
-            e.printStackTrace();
+            // e.printStackTrace();
             throw(e);
         } catch (SAXException e) {
             System.out.println("Ошибка: структура XML файла нарушена");
-            e.printStackTrace();
+            // e.printStackTrace();
             throw(e);
         }
     }
